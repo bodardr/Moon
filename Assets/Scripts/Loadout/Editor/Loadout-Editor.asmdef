@@ -1,0 +1,18 @@
+{
+  "name": "Loadout-Editor",
+  "rootNamespace": "",
+  "references": [
+    "GUID:d12fe225cf454dd4a108b141764dc6f5"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
