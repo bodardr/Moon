@@ -2,6 +2,7 @@
   "dependencies": {
     "com.bodardr.databinding": "https://github.com/bodardr/databinding.git",
     "com.bodardr.urpshaders": "https://github.com/bodardr/urp-shader-library.git",
+    "com.bodardr.utility": "https://github.com/bodardr/utility.git",
     "com.unity.2d.aseprite": "1.2.5",
     "com.unity.ai.navigation": "2.0.7",
     "com.unity.collab-proxy": "2.8.2",

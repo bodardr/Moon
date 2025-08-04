@@ -16,6 +16,15 @@
       },
       "hash": "14df3b661b98efbb50cf77d7edce334caf4e19d7"
     },
+    "com.bodardr.utility": {
+      "version": "https://github.com/bodardr/utility.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.render-pipelines.core": "12.1.7"
+      },
+      "hash": "939326f860e4324e71924081e85faa4f92495472"
+    },
     "com.unity.2d.aseprite": {
       "version": "1.2.5",
       "depth": 0,

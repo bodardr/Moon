@@ -24,7 +24,7 @@ namespace Save
         public uint gold;
         public uint moonDamageTier;
         
-        public Dictionary<string, Dictionary<string, bool>> buildingUpgrades = new();
+        public HashSet<string> buildingUpgrades = new();
 
         private static string FilePath => Path.Combine(Application.persistentDataPath, "save.json");
         public static SaveFile Current { get; private set; }
