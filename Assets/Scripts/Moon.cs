@@ -55,12 +55,13 @@ public class Moon : MonoBehaviour
     public void DealDamage(uint amount)
     {
         SaveFile.Current.moonDamage += amount;
+        SaveFile.Current.lunarite += amount;
 
         if (SaveFile.Current.moonDamage >= CurrentTierDamage && moonTiers.Length > SaveFile.Current.moonDamageTier + 1)
             IncreaseMoonTier();
 
         this.DOKill();
-        material.DOFloat(0, flashPropertyID, 0.75f).From(1).SetEase(Ease.Linear).SetTarget(this);
+        material.DOFloat(0, flashPropertyID, .2f).From(1).SetEase(Ease.InOutFlash).SetTarget(this);
     }
 
     private static void IncreaseMoonTier()

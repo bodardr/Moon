@@ -1,14 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Save;
 using UnityEngine;
 using UnityEngine.EventSystems;
-public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyChanged, IPointerDownHandler,
-    IPointerUpHandler
+using UnityEngine.InputSystem;
+
+public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyChanged, IPointerMoveHandler, ICollectionCallback
 {
+    private bool pointerMoving;
     private bool isPointedAt = false;
     private bool isHeld;
+    private List<RaycastResult> raycastResults = new();
 
     private BuildingBase current;
     private List<BuildingUpgrade> upgradesToShow;
@@ -19,7 +23,9 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
         set
         {
             isHeld = value;
-            UpdateShow();
+            
+            if (value)
+                UpdateShow();
         }
     }
     public bool IsPointedAt
@@ -56,7 +62,8 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
     public void ShowFromBuilding(BuildingBase building, Vector2 offset)
     {
         Current = building;
-        transform.position = (Vector2)building.transform.position + offset;
+        transform.position =
+            (Vector2)PixelateCamera.Instance.UpscaleCamera.WorldToScreenPoint(building.transform.position) + offset;
         IsHeld = true;
     }
     public void Hide()
@@ -64,20 +71,25 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
         IsHeld = false;
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void OnPointerMove(PointerEventData eventData)
     {
-        IsPointedAt = true;
+        pointerMoving = true;
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    private void Update()
     {
-        IsPointedAt = false;
+        var pointerEventData = new PointerEventData(EventSystem.current);
+        pointerEventData.position = Mouse.current.position.ReadValue();
+
+        EventSystem.current.RaycastAll(pointerEventData, raycastResults);
+        IsPointedAt = raycastResults.Find(x => x.gameObject == gameObject).isValid;
+        UpdateShow();
     }
 
     private void UpdateUpgrades()
     {
         UpgradesToShow = current?.Upgrades.Where(x =>
-                x.Prerequisites.Count == 0 ||
+                x.Prerequisites == null || x.Prerequisites.Count == 0 ||
                 !x.Prerequisites.Any(y => SaveFile.Current.buildingUpgrades.Contains(y.Name)))
             .ToList();
     }
@@ -85,5 +97,17 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
     private void UpdateShow()
     {
         gameObject.SetActive(IsHeld || IsPointedAt);
+    }
+    
+    public void OnItemClicked(int index)
+    {
+        var upgrade = UpgradesToShow[index];
+        if (upgrade.IsUnlocked || !upgrade.CanAfford)
+            return;
+        
+        upgrade.SubtractCosts();
+        upgrade.Activate();
+        
+        UpdateUpgrades();
     }
 }

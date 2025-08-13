@@ -171,6 +171,7 @@ GameObject:
   - component: {fileID: 4797449861138979964}
   - component: {fileID: 5637262331487508642}
   - component: {fileID: 5438060773628159512}
+  - component: {fileID: 759865648255134034}
   m_Layer: 5
   m_Name: Count
   m_TagString: Untagged
@@ -296,3 +297,34 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &759865648255134034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4362933439227295354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d50b05ea47cb4434b3ad457018284e0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bindingNodeSearchStrategy: 0
+  updateMethod: 1
+  updateInterval: 0
+  bindingNode: {fileID: 0}
+  updateOnEnable: 1
+  getExpression:
+    path: SaveFile.Current.wood
+    assemblyQualifiedTypeNames:
+    - Save.SaveFile, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - Save.SaveFile, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - System.UInt32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    location: 0
+  setExpression:
+    path: TextMeshProUGUI.text
+    assemblyQualifiedTypeNames:
+    - TMPro.TextMeshProUGUI, Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    - System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    location: 1

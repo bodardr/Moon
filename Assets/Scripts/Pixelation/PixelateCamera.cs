@@ -20,7 +20,7 @@ public class PixelateCamera : MonoBehaviour
 
     [SerializeField] private Vector2Int referenceResolution = new Vector2Int(320, 180);
     [SerializeField] private float pixelsPerUnit = 16;
-    
+
     [SerializeField] private bool subPixel;
     [SerializeField] private bool useTruePosition;
 
@@ -51,14 +51,7 @@ public class PixelateCamera : MonoBehaviour
         RenderPipelineManager.beginCameraRendering -= OnCameraRender;
 
         if (upscaleCamera)
-        {
-            if (Application.isEditor)
-                DestroyImmediate(upscaleCamera.gameObject);
-            else
-                Destroy(upscaleCamera.gameObject);
-
-            upscaleCamera = null;
-        }
+            upscaleCamera.enabled = false;
 
         thisCamera.ResetWorldToCameraMatrix();
     }
@@ -80,6 +73,10 @@ public class PixelateCamera : MonoBehaviour
         additional.requiresDepthOption = CameraOverrideOption.Off;
 
         upscaleCamera.gameObject.hideFlags = HideFlags.HideAndDontSave;
+        if (thisCamera.CompareTag("MainCamera"))
+            thisCamera.gameObject.tag = string.Empty;
+        
+        upscaleCamera.gameObject.tag = "MainCamera";
         upscaleCamera.depth = thisCamera.depth + 1;
         upscaleCamera.clearFlags = CameraClearFlags.Nothing;
         upscaleCamera.cullingMask = 0;
@@ -112,10 +109,23 @@ public class PixelateCamera : MonoBehaviour
         if (upscaleCamera == null)
             CreateUpscaleCamera();
 
+        upscaleCamera.enabled = true;
         thisCamera.orthographicSize = referenceResolution.y / pixelsPerUnit / 2f;
-        
+
+        UpdateUpscaleCameraDetails();
+
         UpdateRenderTexture();
         SnapToPixels();
+    }
+    private void UpdateUpscaleCameraDetails()
+    {
+        upscaleCamera.CopyFrom(thisCamera);
+        upscaleCamera.targetTexture = null;
+        upscaleCamera.depth = thisCamera.depth + 1;
+        upscaleCamera.clearFlags = CameraClearFlags.Nothing;
+        upscaleCamera.cullingMask = 0;
+
+        upscaleCamera.transform.SetPositionAndRotation(thisCamera.transform.position, thisCamera.transform.rotation);
     }
 
     private void UpdateCameraProperties()
