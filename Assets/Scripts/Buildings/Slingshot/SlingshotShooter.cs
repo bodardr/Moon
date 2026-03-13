@@ -1,17 +1,12 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Save;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
-public enum Resource
+public enum ResourceType
 {
-    Wood,
-    Stone,
-    Iron,
-    Lunarite,
-    Gold
+    Lux
 }
 
 public class SlingshotShooter : MonoBehaviour, INotifyPropertyChanged
@@ -23,7 +18,6 @@ public class SlingshotShooter : MonoBehaviour, INotifyPropertyChanged
 
     [SerializeField] private float capacityLoadRatioPerClick = 0.15f;
     [SerializeField] private uint loadCapacityRequired;
-    [SerializeField] private Resource ammoType;
 
     [FormerlySerializedAs("slingshotProjectile")]
     [Header("Launch")]
@@ -48,54 +42,10 @@ public class SlingshotShooter : MonoBehaviour, INotifyPropertyChanged
     {
         var save = SaveFile.Current;
 
-        uint amount = 0;
-        switch (ammoType)
-        {
-            case Resource.Wood:
-                amount = save.wood;
-                break;
-            case Resource.Stone:
-                amount = save.stone;
-                break;
-            case Resource.Iron:
-                amount = save.iron;
-                break;
-            case Resource.Lunarite:
-                amount = save.lunarite;
-                break;
-            case Resource.Gold:
-                amount = save.gold;
-                break;
-        }
-
-
         var amountToLoad = (uint)(loadCapacityRequired * capacityLoadRatioPerClick);
-        if (amount >= amountToLoad)
-        {
-            capacityLoaded += amountToLoad;
 
-            switch (ammoType)
-            {
-                case Resource.Wood:
-                    save.wood -= amountToLoad;
-                    break;
-                case Resource.Stone:
-                    save.stone -= amountToLoad;
-                    break;
-                case Resource.Iron:
-                    save.iron -= amountToLoad;
-                    break;
-                case Resource.Lunarite:
-                    save.lunarite -= amountToLoad;
-                    break;
-                case Resource.Gold:
-                    save.gold -= amountToLoad;
-                    break;
-            }
-
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapacityLoadRatio)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LaunchReady)));
-        }
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapacityLoadRatio)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LaunchReady)));
     }
 
     public void OnLaunchHold()
@@ -121,6 +71,7 @@ public class SlingshotShooter : MonoBehaviour, INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapacityLoadRatio)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LaunchReady)));
     }
+
     private uint CalculateDamage() => loadCapacityRequired * 1;
 
     private void Update()
@@ -150,7 +101,6 @@ public class SlingshotShooter : MonoBehaviour, INotifyPropertyChanged
         }
         else
         {
-
             payload.rotation = Quaternion.identity;
             targetPos = launchPoint.position - payload.TransformVector(payload.GetChild(0).localPosition);
         }

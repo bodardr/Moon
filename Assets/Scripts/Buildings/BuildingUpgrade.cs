@@ -1,14 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Save;
 
-public class BuildingUpgrade
+public interface IBuildingUpgrade
 {
-    public string Name;
-    public bool IsUnlocked;
-    public ResourceWithAmount[] Costs;
+    public string Name { get; }
+    public ResourceWithAmount[] Costs { get; }
+    public bool ShouldShow { get; }
+    public bool IsUnlocked { get; }
+}
+
+public class BuildingUpgrade : IBuildingUpgrade
+{
+    private string name;
+    private bool isUnlocked;
+    private ResourceWithAmount[] costs;
+
+    public string Name => name;
+    public bool IsUnlocked => isUnlocked;
+    public ResourceWithAmount[] Costs => costs;
     public List<BuildingUpgrade> Prerequisites;
-    public Action OnUpgrade;
+    public bool ShowAfterUnlock;
+    private Action onUpgrade;
 
     public bool CanAfford
     {
@@ -22,88 +36,52 @@ public class BuildingUpgrade
         }
     }
 
-    public BuildingUpgrade(string name, Action onUpgrade, params ResourceWithAmount[] costs)
+    public bool ShouldShow => (Prerequisites == null || Prerequisites.Count == 0 ||
+            Prerequisites.All(y => SaveFile.Current.buildingUpgrades.Contains(y.Name)))
+        && (!IsUnlocked || ShowAfterUnlock);
+
+    public BuildingUpgrade(string name, Action onUpgrade, bool showAfterUnlock = false, params ResourceWithAmount[] costs)
     {
-        Name = name;
-        Costs = costs;
-        OnUpgrade = onUpgrade;
+        this.name = name;
+        this.costs = costs;
+        this.onUpgrade = onUpgrade;
+        ShowAfterUnlock = showAfterUnlock;
     }
 
     public BuildingUpgrade(string name, Action onUpgrade, List<BuildingUpgrade> prerequisites,
-        params ResourceWithAmount[] costs) : this(name, onUpgrade, costs)
+        bool showAfterUnlock = false, params ResourceWithAmount[] costs) : this(name, onUpgrade, showAfterUnlock, costs)
     {
         Prerequisites = prerequisites;
     }
 
-    public void Activate(bool fromLoad = false)
+    public BuildingUpgrade(string name, Action onUpgrade, BuildingUpgrade prerequisite,
+        bool showAfterUnlock = false, params ResourceWithAmount[] costs) : this(name, onUpgrade, showAfterUnlock, costs)
     {
-        IsUnlocked = true;
-        OnUpgrade?.Invoke();
+        Prerequisites = new List<BuildingUpgrade> { prerequisite };
+    }
+
+    public void Unlock(bool fromLoad = false)
+    {
+        isUnlocked = true;
+        onUpgrade?.Invoke();
 
         if (fromLoad)
             return;
 
         SaveFile.Current.buildingUpgrades.Add(Name);
     }
-
-    public void SubtractCosts()
-    {
-        if (!CanAfford)
-            return;
-
-        var saveFile = SaveFile.Current;
-        foreach (var cost in Costs)
-        {
-            switch (cost.Resource)
-            {
-                case Resource.Wood:
-                    saveFile.wood -= cost.Amount;
-                    break;
-                case Resource.Stone:
-                    saveFile.stone -= cost.Amount;
-                    break;
-                case Resource.Iron:
-                    saveFile.iron -= cost.Amount;
-                    break;
-                case Resource.Lunarite:
-                    saveFile.lunarite -= cost.Amount;
-                    break;
-                case Resource.Gold:
-                    saveFile.gold -= cost.Amount;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-    }
 }
 
 public class ResourceWithAmount
 {
-    public Resource Resource;
+    public ResourceType ResourceType;
     public uint Amount;
 
-    public bool CanAfford
-    {
-        get
-        {
-            var saveFile = SaveFile.Current;
-            uint resource = Resource switch
-            {
-                Resource.Wood => saveFile.wood,
-                Resource.Stone => saveFile.stone,
-                Resource.Iron => saveFile.iron,
-                Resource.Lunarite => saveFile.lunarite,
-                Resource.Gold => saveFile.gold,
-                _ => throw new NotImplementedException()
-            };
-            return resource >= Amount;
-        }
-    }
+    public bool CanAfford => SaveFile.Current[ResourceType].Amount >= Amount;
 
-    public ResourceWithAmount(Resource resource, uint amount)
+    public ResourceWithAmount(ResourceType resourceType, uint amount = 0)
     {
-        Resource = resource;
+        ResourceType = resourceType;
         Amount = amount;
     }
 }

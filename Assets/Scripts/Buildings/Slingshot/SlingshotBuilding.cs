@@ -1,7 +1,7 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.EventSystems;
+
 public class SlingshotBuilding : BuildingBase, INotifyPropertyChanged
 {
     private bool isBuilt;
@@ -21,28 +21,23 @@ public class SlingshotBuilding : BuildingBase, INotifyPropertyChanged
 
     private void Awake()
     {
-        upgrades.Add(new BuildingUpgrade("Build Slingshot", () => IsBuilt = true,
-            new ResourceWithAmount(Resource.Wood, 20)));
+        upgrades.Add(new BuildingUpgrade("Build Slingshot", () => IsBuilt = true, true, new ResourceWithAmount(ResourceType.Lux, 20)));
     }
 
-    public override void OnPointerClick(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData)
     {
         if (IsBuilt && !slingshotShooter.LaunchReady)
             slingshotShooter.LoadMaterials();
     }
 
-    public override void OnPointerDown(PointerEventData eventData)
+    public void OnPointerDown(PointerEventData eventData)
     {
-        base.OnPointerDown(eventData);
-
         if (IsBuilt && slingshotShooter.LaunchReady)
             slingshotShooter.OnLaunchHold();
     }
 
-    override public void OnPointerUp(PointerEventData eventData)
+    public void OnPointerUp(PointerEventData eventData)
     {
-        base.OnPointerUp(eventData);
-
         if (IsBuilt && slingshotShooter.LaunchReady)
             slingshotShooter.OnLauncherRelease();
     }

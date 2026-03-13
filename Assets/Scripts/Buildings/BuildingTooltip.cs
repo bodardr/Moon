@@ -7,7 +7,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyChanged, IPointerMoveHandler, ICollectionCallback
+public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyChanged, IPointerMoveHandler,
+    ICollectionCallback
 {
     private bool pointerMoving;
     private bool isPointedAt = false;
@@ -16,6 +17,7 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
 
     private BuildingBase current;
     private List<BuildingUpgrade> upgradesToShow;
+    private RectTransform rectTransform;
 
     public bool IsHeld
     {
@@ -23,7 +25,7 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
         set
         {
             isHeld = value;
-            
+
             if (value)
                 UpdateShow();
         }
@@ -59,11 +61,17 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public void ShowFromBuilding(BuildingBase building, Vector2 offset)
+    public void ShowFromBuilding(BuildingBase building, Vector2 pivot, Vector2 offset)
     {
         Current = building;
+
+        if (rectTransform == null)
+            rectTransform = (RectTransform)transform;
+
+        rectTransform.pivot = pivot;
         transform.position =
             (Vector2)PixelateCamera.Instance.UpscaleCamera.WorldToScreenPoint(building.transform.position) + offset;
+
         IsHeld = true;
     }
     public void Hide()
@@ -88,9 +96,7 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
 
     private void UpdateUpgrades()
     {
-        UpgradesToShow = current?.Upgrades.Where(x =>
-                x.Prerequisites == null || x.Prerequisites.Count == 0 ||
-                !x.Prerequisites.Any(y => SaveFile.Current.buildingUpgrades.Contains(y.Name)))
+        UpgradesToShow = current?.Upgrades.Where(x => x.ShouldShow)
             .ToList();
     }
 
@@ -98,16 +104,20 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
     {
         gameObject.SetActive(IsHeld || IsPointedAt);
     }
-    
+
     public void OnItemClicked(int index)
     {
         var upgrade = UpgradesToShow[index];
         if (upgrade.IsUnlocked || !upgrade.CanAfford)
             return;
         
-        upgrade.SubtractCosts();
-        upgrade.Activate();
+        //Subtract costs
+        var saveFile = SaveFile.Current;
+        foreach (var cost in upgrade.Costs)
+            saveFile[cost.ResourceType].Amount -= cost.Amount;
         
+        upgrade.Unlock();
+
         UpdateUpgrades();
-    }
+    } 
 }

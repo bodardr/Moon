@@ -264,6 +264,7 @@ MonoBehaviour:
   m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -309,16 +310,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d50b05ea47cb4434b3ad457018284e0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindingNodeSubscriptionMethod: 0
   bindingNodeSearchStrategy: 0
+  bindingNodeType: 
   updateMethod: 1
   updateInterval: 0
   bindingNode: {fileID: 0}
   updateOnEnable: 1
   getExpression:
-    path: SaveFile.Current.wood
+    path: SaveFile.Current.Lux.Amount
     assemblyQualifiedTypeNames:
     - Save.SaveFile, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     - Save.SaveFile, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - ResourceWithAmount, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     - System.UInt32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
     location: 0
   setExpression:

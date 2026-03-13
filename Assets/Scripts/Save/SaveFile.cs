@@ -4,7 +4,7 @@ using System.IO;
 using Loadout;
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.Serialization;
+
 namespace Save
 {
     [Loadout]
@@ -15,19 +15,20 @@ namespace Save
         public float normalizedMoonTime;
         
         public uint moonDamage;
+        public ResourceWithAmount Lux = new(ResourceType.Lux);
         
-        public uint energy;
-        public uint wood;
-        public uint stone;
-        public uint lunarite;
-        public uint iron;
-        public uint gold;
         public uint moonDamageTier;
         
         public HashSet<string> buildingUpgrades = new();
 
+        public ResourceWithAmount this[ResourceType resourceType] => resourceType switch
+        {
+            ResourceType.Lux => Lux
+        };
+        
         private static string FilePath => Path.Combine(Application.persistentDataPath, "save.json");
         public static SaveFile Current { get; private set; }
+
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
         private static void Init()
@@ -39,7 +40,7 @@ namespace Save
         private static void Load()
         {
             var loadoutSave = LoadoutLoader.GetValue<SaveFile>();
-            Current = loadoutSave ?? JsonConvert.DeserializeObject<SaveFile>(File.ReadAllText(FilePath)) ?? new SaveFile();
+            Current = loadoutSave ?? (File.Exists(FilePath) ? JsonConvert.DeserializeObject<SaveFile>(File.ReadAllText(FilePath)) : new SaveFile());
         }
 
         public static void Save()

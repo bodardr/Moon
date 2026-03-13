@@ -26,6 +26,7 @@ Shader "Custom/PixelSnapSprite"
             #pragma target 3.0
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "PixelUtility.hlsl"
 
             struct Attributes {
                 float4 positionOS : POSITION;
@@ -34,7 +35,6 @@ Shader "Custom/PixelSnapSprite"
 
             struct Varyings {
                 float2 uv : TEXCOORD0;
-                float2 coord : TEXCOORD1;
                 float4 positionHCS : SV_POSITION;
             };
 
@@ -44,18 +44,9 @@ Shader "Custom/PixelSnapSprite"
             {
                 Varyings OUT;
 
-                float3 objectOriginWS = unity_ObjectToWorld._m03_m13_m23;
-                float4 objectOriginHClip = TransformWorldToHClip(objectOriginWS);
-                float2 objectOriginNDC = objectOriginHClip.xy * 0.5f + 0.5f;
-
-                float2 snappedObjectOriginNDC = floor(objectOriginNDC * _ScreenParams.xy) / _ScreenParams.xy;
-                float2 snappingDelta = objectOriginNDC - snappedObjectOriginNDC;
-                snappingDelta = snappingDelta * 2.0f;
-                OUT.coord = snappingDelta;
-                
-                OUT.positionHCS = TransformObjectToHClip(IN.positionOS) - float4(snappingDelta.x,snappingDelta.y,0,0);
-
                 OUT.uv = IN.uv;
+                OUT.positionHCS = SnapToPixelCoords(IN.positionOS, unity_ObjectToWorld);
+
                 return OUT;
             }
 

@@ -109,16 +109,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7378055951e7446ca86119da5ac26542, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindingNodeSubscriptionMethod: 0
   bindingNodeSearchStrategy: 0
+  bindingNodeType: 
   updateMethod: 0
   updateInterval: 0
   bindingNode: {fileID: 6098958448709757018}
   updateOnEnable: 1
   getExpression:
-    path: ResourceWithAmount.Resource
+    path: ResourceWithAmount.ResourceType
     assemblyQualifiedTypeNames:
     - ResourceWithAmount, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    - Resource, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - ResourceType, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     location: 2
   setExpression:
     path: Image.sprite
@@ -128,26 +130,9 @@ MonoBehaviour:
       PublicKeyToken=null
     location: 1
   values:
-  - objectRef: {fileID: -7099692229502150793, guid: b60ada52dd62f2e4eb6d280cff61d3f1, type: 3}
+  - objectRef: {fileID: -4627979627898863873, guid: 0e0d1fca022df2746b179eb3b4668ff9, type: 3}
     json: 
     assemblyQualifiedTypeName: 
-    serializationType: 1
-  - objectRef: {fileID: -2263024594380104731, guid: 1cddca082956d2c4ea0a33fc724b6c2a, type: 3}
-    json: 
-    assemblyQualifiedTypeName: 
-    serializationType: 1
-  - objectRef: {fileID: -3142037891027149946, guid: b4fe07c1f34a61e4a9d3b6fdfbe89194, type: 3}
-    json: 
-    assemblyQualifiedTypeName: 
-    serializationType: 1
-  - objectRef: {fileID: -3823440953443854636, guid: 14240b6e041cd2a4a98def020da7a2ed, type: 3}
-    json: 
-    assemblyQualifiedTypeName: 
-    serializationType: 1
-  - objectRef: {fileID: 3800604460061007121, guid: f0aaa389d9a1e164c9e2212b01c4498d, type: 3}
-    json: 
-    assemblyQualifiedTypeName: 
-    serializationType: 1
 --- !u!1 &6337146098217714236
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,6 +321,7 @@ MonoBehaviour:
   m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -381,7 +367,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d50b05ea47cb4434b3ad457018284e0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindingNodeSubscriptionMethod: 0
   bindingNodeSearchStrategy: 0
+  bindingNodeType: 
   updateMethod: 0
   updateInterval: 0
   bindingNode: {fileID: 6098958448709757018}
@@ -411,7 +399,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d21da7d4958497e92217bb9fa2d2369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindingNodeSubscriptionMethod: 0
   bindingNodeSearchStrategy: 0
+  bindingNodeType: 
   updateMethod: 0
   updateInterval: 0
   bindingNode: {fileID: 6098958448709757018}
@@ -431,15 +421,14 @@ MonoBehaviour:
       PublicKeyToken=null
     location: 1
   invert: 0
+  doNothingOnNull: 0
   trueValue:
     objectRef: {fileID: 0}
     json: '{"r":1.0,"g":1.0,"b":1.0,"a":1.0}'
     assemblyQualifiedTypeName: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-    serializationType: 0
   falseValue:
     objectRef: {fileID: 0}
     json: '{"r":1.0,"g":0.26226407289505007,"b":0.26226407289505007,"a":1.0}'
     assemblyQualifiedTypeName: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-    serializationType: 0

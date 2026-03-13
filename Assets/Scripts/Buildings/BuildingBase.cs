@@ -2,43 +2,44 @@
 using Save;
 using UnityEngine;
 using UnityEngine.EventSystems;
-public class BuildingBase : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+
+public class BuildingBase : MonoBehaviour
 {
     protected List<BuildingUpgrade> upgrades = new();
-
-    [SerializeField] private Vector2 tooltipOffset;
+    
+    [Header("Building Info")]
     [SerializeField] private string buildingName;
 
     public string BuildingName => buildingName;
 
     public IReadOnlyList<BuildingUpgrade> Upgrades => upgrades;
 
-    protected virtual void Start()
+    private void Start()
     {
+        InitializeUpgrades();
+        
         var saveFile = SaveFile.Current;
         foreach (var upgrade in upgrades)
             if (saveFile.buildingUpgrades.Contains(upgrade.Name))
-                upgrade.Activate(true);
+                upgrade.Unlock(true);
     }
-
-    public virtual void OnPointerClick(PointerEventData eventData)
+    protected virtual void InitializeUpgrades()
     {
-
     }
     
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
-        BuildingTooltip.Instance.ShowFromBuilding(this, tooltipOffset);
     }
     
     public virtual void OnPointerExit(PointerEventData eventData)
     {
-        BuildingTooltip.Instance.Hide();
     }
-
+    
+    public virtual void OnPointerClick(PointerEventData eventData)
+    {
+    }
     public virtual void OnPointerDown(PointerEventData eventData)
     {
-        
     }
     public virtual void OnPointerUp(PointerEventData eventData)
     {

@@ -55,8 +55,7 @@ public class Moon : MonoBehaviour
     public void DealDamage(uint amount)
     {
         SaveFile.Current.moonDamage += amount;
-        SaveFile.Current.lunarite += amount;
-
+        
         if (SaveFile.Current.moonDamage >= CurrentTierDamage && moonTiers.Length > SaveFile.Current.moonDamageTier + 1)
             IncreaseMoonTier();
 

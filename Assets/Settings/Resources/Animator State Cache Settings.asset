@@ -11,5 +11,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f95c3a1e9fc74548a0f654356e74d23b, type: 3}
   m_Name: Animator State Cache Settings
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: com.bodardr.utility.runtime::AnimatorStateCacheSettings
   addStateCacheToAnimatorsAutomatically: 0
