@@ -20,10 +20,10 @@ public class Spark : MonoBehaviour
     [Header("Settings Per Bounce")]
     [SerializeField] private float baseLength;
     [SerializeField] private float lengthPerBounce;
-    
+
     [SerializeField] private float baseSpeed;
     [SerializeField] private float speedPerBounce;
-    
+
     [SerializeField] private float baseAmplitude;
     [SerializeField] private float amplitudePerBounce;
 
@@ -83,11 +83,11 @@ public class Spark : MonoBehaviour
         while (normalizedBounceTime >= 1f)
         {
             bounceIndex++;
-            onBounceComplete?.Invoke(bounceIndex);
             normalizedBounceTime -= 1;
 
             if (bounceIndex < bounceCount)
             {
+                onBounceComplete?.Invoke(bounceIndex + 1);
                 currentStart = currentEnd;
                 CalculateNextBounce();
             }

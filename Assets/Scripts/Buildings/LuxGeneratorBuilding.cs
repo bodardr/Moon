@@ -1,11 +1,13 @@
-﻿using Save;
+﻿using System;
+using System.Collections.Generic;
+using Save;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Pool;
 using Utils;
 using Random = UnityEngine.Random;
 
-public class LuxGeneratorBuilding : BuildingBase
+public class LuxGeneratorBuilding : BuildingBase, IGearHolder
 {
     private uint solarPanelCount;
     private float solarPanelTime;
@@ -15,6 +17,7 @@ public class LuxGeneratorBuilding : BuildingBase
 
     private Vector3 sparkPosition;
     private float holdTime;
+    private GearTarget gearTarget;
 
     private ObjectPool<Spark> sparkPool;
 
@@ -29,10 +32,20 @@ public class LuxGeneratorBuilding : BuildingBase
     [SerializeField] private uint maxRebounds = 2;
 
     [SerializeField] private GameObject sparkPrefab;
+    
+    [SerializeField] private Gear[] initialClickGears;
+    [SerializeField] private Gear[] initialSparkGears;
+
+    public List<List<Gear>> Gears { get; set; }
+
+    public GearStats Stats { get; } = new();
+    public Dictionary<IStatusEffect, StatusEffectInstance> StatusEffects { get; } = new();
 
     private void Awake()
     {
+        gearTarget = GetComponent<GearTarget>();
         sparkPool = ObjectPoolUtility.CreatePoolFast<Spark>(sparkPrefab, transform);
+        Gears = GearUtility.CreateGearSequence(initialClickGears);
     }
 
     protected override void InitializeUpgrades()
@@ -64,7 +77,7 @@ public class LuxGeneratorBuilding : BuildingBase
         if (solarPanelCount <= 0)
             return;
 
-        solarPanelTime += Time.deltaTime;
+        solarPanelTime += Time.deltaTime * Stats.SpeedRate.EvaluatedValue;
         var interval = solarPanelInterval / solarPanelCount;
 
         while (solarPanelTime > interval)
@@ -77,9 +90,8 @@ public class LuxGeneratorBuilding : BuildingBase
     private void InstallSolarPanel()
     {
         solarPanelCount++;
-        //visual feedback here
     }
-    
+
     private void Tick(bool allowRebounds = false)
     {
         var bounceCount = 1;
@@ -103,6 +115,7 @@ public class LuxGeneratorBuilding : BuildingBase
 
         var spark = sparkPool.Get();
         spark.Initialize(bounceCount, initialPosition, sparkPool, OnSparkRebound);
+        OnSparkRebound(1);
     }
 
     private void OnSparkRebound(int bounceIndex)
@@ -114,6 +127,8 @@ public class LuxGeneratorBuilding : BuildingBase
     {
         base.OnPointerDown(eventData);
         holdTime = Time.time;
+
+        GearUtility.PlayGearSequence(Gears, 1, gearTarget);
     }
 
     public override void OnPointerUp(PointerEventData eventData)

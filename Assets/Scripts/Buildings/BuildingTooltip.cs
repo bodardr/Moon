@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using Save;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyChanged, IPointerMoveHandler,
-    ICollectionCallback
+public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyChanged, IPointerMoveHandler
 {
     private bool pointerMoving;
     private bool isPointedAt = false;
@@ -16,7 +12,6 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
     private List<RaycastResult> raycastResults = new();
 
     private BuildingBase current;
-    private List<BuildingUpgrade> upgradesToShow;
     private RectTransform rectTransform;
 
     public bool IsHeld
@@ -46,16 +41,7 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
         set
         {
             current = value;
-            UpdateUpgrades();
-        }
-    }
-    public List<BuildingUpgrade> UpgradesToShow
-    {
-        get => upgradesToShow;
-        set
-        {
-            upgradesToShow = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UpgradesToShow)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Current)));
         }
     }
 
@@ -94,30 +80,12 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
         UpdateShow();
     }
 
-    private void UpdateUpgrades()
-    {
-        UpgradesToShow = current?.Upgrades.Where(x => x.ShouldShow)
-            .ToList();
-    }
-
     private void UpdateShow()
     {
         gameObject.SetActive(IsHeld || IsPointedAt);
     }
-
     public void OnItemClicked(int index)
     {
-        var upgrade = UpgradesToShow[index];
-        if (upgrade.IsUnlocked || !upgrade.CanAfford)
-            return;
-        
-        //Subtract costs
-        var saveFile = SaveFile.Current;
-        foreach (var cost in upgrade.Costs)
-            saveFile[cost.ResourceType].Amount -= cost.Amount;
-        
-        upgrade.Unlock();
-
-        UpdateUpgrades();
-    } 
+        throw new System.NotImplementedException();
+    }
 }

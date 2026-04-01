@@ -77,6 +77,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   setAmount: 0
+  setsActive: 1
   amount: 0
   useObjectPooling: 0
   prefab: {fileID: 6337146098217714236, guid: b36674983a0a1a841899a1e8e8ed85a7, type: 3}
@@ -96,7 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d50b05ea47cb4434b3ad457018284e0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindingNodeSubscriptionMethod: 0
   bindingNodeSearchStrategy: 0
+  bindingNodeType: 
   updateMethod: 0
   updateInterval: 0
   bindingNode: {fileID: 8529977692502049163}
@@ -219,6 +222,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -264,7 +268,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d50b05ea47cb4434b3ad457018284e0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindingNodeSubscriptionMethod: 0
   bindingNodeSearchStrategy: 0
+  bindingNodeType: 
   updateMethod: 0
   updateInterval: 0
   bindingNode: {fileID: 8529977692502049163}
@@ -385,6 +391,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -475,8 +482,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 16
-    m_Right: 16
+    m_Left: 0
+    m_Right: 0
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
@@ -505,7 +512,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: -1
+  m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
 --- !u!114 &8529977692502049163
@@ -596,7 +603,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b15ce2f4025140509919f6c99f0a0700, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bindingNodeSubscriptionMethod: 0
   bindingNodeSearchStrategy: 0
+  bindingNodeType: 
   updateMethod: 0
   updateInterval: 0
   bindingNode: {fileID: 8529977692502049163}
