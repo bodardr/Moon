@@ -1,5 +1,5 @@
 using UnityEngine;
-using System;
+using System.Collections.Generic;
 using UnityEngine.Pool;
 using Random = UnityEngine.Random;
 
@@ -9,13 +9,15 @@ public class Spark : MonoBehaviour
     private int bounceCount;
     private float speed;
     private float length;
-    private Action<int> onBounceComplete;
     private ObjectPool<Spark> pool;
 
     private Vector3 currentStart, currentEnd;
     private Vector3 bounceTangent;
     private float normalizedBounceTime;
+    private uint gearAmplitude;
     private int bounceIndex = 0;
+    private List<Gear> gearColumn;
+    private GearTarget target;
 
     [Header("Settings Per Bounce")]
     [SerializeField] private float baseLength;
@@ -28,14 +30,20 @@ public class Spark : MonoBehaviour
     [SerializeField] private float amplitudePerBounce;
 
 
-    public void Initialize(int bounceCount, Vector3 initialPosition, ObjectPool<Spark> pool, Action<int> callback)
+    public void Initialize(int bounceCount, Vector3 initialPosition, ObjectPool<Spark> pool, GearTarget target,
+        List<Gear> gearColumn, uint amplitude)
     {
+        transform.SetParent(target.transform);
+        transform.localScale = Vector3.one;
+
+        this.gearColumn = gearColumn;
         this.bounceCount = bounceCount;
         this.pool = pool;
+        this.target = target;
+        gearAmplitude = amplitude;
 
         bounceIndex = 0;
         normalizedBounceTime = 0;
-        onBounceComplete = callback;
 
         transform.localPosition = currentStart = initialPosition;
 
@@ -85,9 +93,9 @@ public class Spark : MonoBehaviour
             bounceIndex++;
             normalizedBounceTime -= 1;
 
+            GearUtility.PlayGearColumn(gearColumn, gearAmplitude, null, target);
             if (bounceIndex < bounceCount)
             {
-                onBounceComplete?.Invoke(bounceIndex + 1);
                 currentStart = currentEnd;
                 CalculateNextBounce();
             }

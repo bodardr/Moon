@@ -402,8 +402,8 @@ MonoBehaviour:
   bindingNodeSubscriptionMethod: 0
   bindingNodeSearchStrategy: 0
   bindingNodeType: 
-  updateMethod: 0
-  updateInterval: 0
+  updateMethod: 2
+  updateInterval: 0.1
   bindingNode: {fileID: 6098958448709757018}
   updateOnEnable: 1
   getExpression:

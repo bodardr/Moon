@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using Save;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyChanged, IPointerMoveHandler
 {
@@ -11,8 +14,12 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
     private bool isHeld;
     private List<RaycastResult> raycastResults = new();
 
+    private TabController tabController;
+
     private BuildingBase current;
     private RectTransform rectTransform;
+
+    [SerializeField] private Button[] tabButtons;
 
     public bool IsHeld
     {
@@ -47,6 +54,18 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private void Awake()
+    {
+        tabController = GetComponent<TabController>();
+        for (var i = 0; i < tabButtons.Length; i++)
+        {
+            var button = tabButtons[i];
+            var index = i;
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(() => tabController.SetTabIndex(index));
+        }
+    }
+
     public void ShowFromBuilding(BuildingBase building, Vector2 pivot, Vector2 offset)
     {
         Current = building;
@@ -56,7 +75,9 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
 
         rectTransform.pivot = pivot;
         transform.position =
-            (Vector2)PixelateCamera.Instance.UpscaleCamera.WorldToScreenPoint(building.transform.position) + offset;
+            (Vector2)PixelateCamera.Instance.Camera.WorldToScreenPoint(building.transform.position) + offset;
+
+        UpdateTabs(Current.Tabs);
 
         IsHeld = true;
     }
@@ -77,15 +98,29 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
 
         EventSystem.current.RaycastAll(pointerEventData, raycastResults);
         IsPointedAt = raycastResults.Find(x => x.gameObject == gameObject).isValid;
-        UpdateShow();
     }
 
+    private void UpdateTabs(BuildingTabs tabs)
+    {
+        var values = (BuildingTabs[])Enum.GetValues(typeof(BuildingTabs));
+
+        foreach (var tab in values)
+        {
+            if (tab is BuildingTabs.All or BuildingTabs.None)
+                continue;
+            
+            var active = tabs.HasFlag(tab);
+
+            if (tab == BuildingTabs.Gears)
+                active = active && SaveFile.Current.GearsUnlocked;
+            
+            var index = (int)Mathf.Log((int)tab,2);
+            tabButtons[index].gameObject.SetActive(active);
+        }
+    }
+    
     private void UpdateShow()
     {
-        gameObject.SetActive(IsHeld || IsPointedAt);
-    }
-    public void OnItemClicked(int index)
-    {
-        throw new System.NotImplementedException();
+        //gameObject.SetActive(IsHeld || IsPointedAt);
     }
 }

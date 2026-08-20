@@ -4,11 +4,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
-public enum ResourceType
-{
-    Lux
-}
-
 public class SlingshotShooter : MonoBehaviour, INotifyPropertyChanged
 {
     private uint capacityLoaded;

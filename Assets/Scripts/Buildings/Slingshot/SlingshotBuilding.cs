@@ -21,22 +21,27 @@ public class SlingshotBuilding : BuildingBase, INotifyPropertyChanged
 
     private void Awake()
     {
-        upgrades.Add(new BuildingUpgrade("Build Slingshot", () => IsBuilt = true, true, new ResourceWithAmount(ResourceType.Lux, 20)));
+        upgrades.Add(new BuildingUpgrade("Build Slingshot", _ => IsBuilt = true, true,
+            new ResourceWithAmount(ResourceType.Lux, 20)));
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    protected override void InitializeUpgrades()
+    {
+    }
+
+    public override void OnPointerClick(PointerEventData eventData)
     {
         if (IsBuilt && !slingshotShooter.LaunchReady)
             slingshotShooter.LoadMaterials();
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public override void OnPointerDown(PointerEventData eventData)
     {
         if (IsBuilt && slingshotShooter.LaunchReady)
             slingshotShooter.OnLaunchHold();
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public override void OnPointerUp(PointerEventData eventData)
     {
         if (IsBuilt && slingshotShooter.LaunchReady)
             slingshotShooter.OnLauncherRelease();

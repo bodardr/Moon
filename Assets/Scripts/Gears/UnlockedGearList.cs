@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Save;
 using UnityEngine;
 using UnityEngine.Pool;
 using Utils;
@@ -6,30 +7,29 @@ public class UnlockedGearList : MonoBehaviour
 {
     private Grid grid;
 
-    private ObjectPool<GearDraggableBehavior> gearPool;
-    private List<GearDraggableBehavior> activeGears = new();
+    private ObjectPool<GearInventoryElement> gearPool;
+    private List<GearInventoryElement> activeGears = new();
 
     [SerializeField] private GameObject gearElementPrefab;
-    [SerializeField] private GearSequence gearSequence;
 
     private void Awake()
     {
-        gearPool = ObjectPoolUtility.CreatePoolFast<GearDraggableBehavior>(gearElementPrefab, transform);
+        gearPool = ObjectPoolUtility.CreatePoolFast<GearInventoryElement>(gearElementPrefab);
     }
 
     private void OnEnable()
     {
-        transform.DetachChildren();
         foreach (var activeGear in activeGears)
             if (activeGear.transform.IsChildOf(transform))
                 gearPool.Release(activeGear);
         activeGears.Clear();
 
-        foreach (var gear in GearCache.AllGears)
+        foreach (var (gearID, amount) in SaveFile.Current.availableGearInventory)
         {
             var gearElement = gearPool.Get();
-            gearElement.Gear = gear;
-            gearElement.GearSequence = gearSequence;
+            gearElement.transform.SetParent(transform);
+            gearElement.transform.localScale = Vector3.one;
+            gearElement.Initialize(Gear.AllGears[gearID], amount);
             activeGears.Add(gearElement);
         }
     }

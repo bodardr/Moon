@@ -7,4 +7,4 @@ TextAsset:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LoadoutKeys
-  m_Script: '{"LoadoutKeysDict":{},"LoadoutTypesDict":{},"EnabledKeys":[],"EnabledTypes":[]}'
+  m_Script: '{"LoadoutKeysDict":{"Save.SaveFile::forceCreateNewSave":"false"},"LoadoutTypesDict":{},"EnabledKeys":["Save.SaveFile::forceCreateNewSave"],"EnabledTypes":[]}'

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e918db17e43cf284a806424511d980a0, type: 3}
+  m_Name: Spark Gear
+  m_EditorClassIdentifier: Assembly-CSharp::Gear
+  uid: 44f62d97-3ae5-42a8-bd26-2d8ea5c7c988
+  gearName: Spark
+  icon: {fileID: -3990430960552853761, guid: 37037f8fd741b994fae33b94d6c02719, type: 3}
+  properties: 7
+  triggerBehavior:
+    rid: 3698731976499396687
+  references:
+    version: 2
+    RefIds:
+    - rid: 3698731976499396687
+      type: {class: SparkGearBehavior, ns: , asm: Assembly-CSharp}
+      data:
+        sparkPrefab: {fileID: 4653969006283021390, guid: 914b4b30d1366c84caabf5b75ee05c0c, type: 3}

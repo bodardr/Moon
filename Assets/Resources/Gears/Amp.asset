@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e918db17e43cf284a806424511d980a0, type: 3}
+  m_Name: Amp
+  m_EditorClassIdentifier: Assembly-CSharp::Gear
+  uid: 8e585a53-9117-41b5-a602-8ae7851f56ba
+  gearName: Amp
+  icon: {fileID: 8846075456384910321, guid: 1e561acc66a8d5f449a431b2541ad6f2, type: 3}
+  properties: 3
+  triggerBehavior:
+    rid: 3698731976499396688
+  references:
+    version: 2
+    RefIds:
+    - rid: 3698731976499396688
+      type: {class: AmpGearBehavior, ns: , asm: Assembly-CSharp}
+      data:
+        addedAmplitude: 5

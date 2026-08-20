@@ -3,16 +3,19 @@ using Save;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BuildingBase : MonoBehaviour
+public abstract class BuildingBase : MonoBehaviour
 {
     protected List<BuildingUpgrade> upgrades = new();
     
     [Header("Building Info")]
     [SerializeField] private string buildingName;
 
+    [SerializeField] private BuildingTabs buildingTabs = BuildingTabs.Upgrades | BuildingTabs.Gears;
+
     public string BuildingName => buildingName;
 
     public IReadOnlyList<BuildingUpgrade> Upgrades => upgrades;
+    public BuildingTabs Tabs => buildingTabs;
 
     private void Start()
     {
@@ -23,9 +26,8 @@ public class BuildingBase : MonoBehaviour
             if (saveFile.buildingUpgrades.Contains(upgrade.Name))
                 upgrade.Unlock(true);
     }
-    protected virtual void InitializeUpgrades()
-    {
-    }
+    protected abstract void InitializeUpgrades();
+    
     
     public virtual void OnPointerEnter(PointerEventData eventData)
     {

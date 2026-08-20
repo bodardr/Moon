@@ -3,14 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Save;
 
-public interface IBuildingUpgrade
-{
-    public string Name { get; }
-    public ResourceWithAmount[] Costs { get; }
-    public bool ShouldShow { get; }
-    public bool IsUnlocked { get; }
-}
-
 public class BuildingUpgrade : IBuildingUpgrade
 {
     private string name;
@@ -22,7 +14,7 @@ public class BuildingUpgrade : IBuildingUpgrade
     public ResourceWithAmount[] Costs => costs;
     public List<BuildingUpgrade> Prerequisites;
     public bool ShowAfterUnlock;
-    private Action onUpgrade;
+    private Action<bool> onUpgrade;
 
     public bool CanAfford
     {
@@ -40,7 +32,7 @@ public class BuildingUpgrade : IBuildingUpgrade
             Prerequisites.All(y => SaveFile.Current.buildingUpgrades.Contains(y.Name)))
         && (!IsUnlocked || ShowAfterUnlock);
 
-    public BuildingUpgrade(string name, Action onUpgrade, bool showAfterUnlock = false, params ResourceWithAmount[] costs)
+    public BuildingUpgrade(string name, Action<bool> onUpgrade, bool showAfterUnlock = false, params ResourceWithAmount[] costs)
     {
         this.name = name;
         this.costs = costs;
@@ -48,13 +40,13 @@ public class BuildingUpgrade : IBuildingUpgrade
         ShowAfterUnlock = showAfterUnlock;
     }
 
-    public BuildingUpgrade(string name, Action onUpgrade, List<BuildingUpgrade> prerequisites,
+    public BuildingUpgrade(string name, Action<bool> onUpgrade, List<BuildingUpgrade> prerequisites,
         bool showAfterUnlock = false, params ResourceWithAmount[] costs) : this(name, onUpgrade, showAfterUnlock, costs)
     {
         Prerequisites = prerequisites;
     }
 
-    public BuildingUpgrade(string name, Action onUpgrade, BuildingUpgrade prerequisite,
+    public BuildingUpgrade(string name, Action<bool> onUpgrade, BuildingUpgrade prerequisite,
         bool showAfterUnlock = false, params ResourceWithAmount[] costs) : this(name, onUpgrade, showAfterUnlock, costs)
     {
         Prerequisites = new List<BuildingUpgrade> { prerequisite };
@@ -63,25 +55,11 @@ public class BuildingUpgrade : IBuildingUpgrade
     public void Unlock(bool fromLoad = false)
     {
         isUnlocked = true;
-        onUpgrade?.Invoke();
+        onUpgrade?.Invoke(fromLoad);
 
         if (fromLoad)
             return;
 
         SaveFile.Current.buildingUpgrades.Add(Name);
-    }
-}
-
-public class ResourceWithAmount
-{
-    public ResourceType ResourceType;
-    public uint Amount;
-
-    public bool CanAfford => SaveFile.Current[ResourceType].Amount >= Amount;
-
-    public ResourceWithAmount(ResourceType resourceType, uint amount = 0)
-    {
-        ResourceType = resourceType;
-        Amount = amount;
     }
 }

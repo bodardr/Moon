@@ -5,36 +5,34 @@ using UnityEngine.Rendering.Universal;
 public class PixelBlitRendererFeature : ScriptableRendererFeature
 {
     private PixelateCamera pixelCamera;
-    private PixelBlitPass upscalePass;
+    private PixelDownscalePass downscalePass;
+    private PixelUpscalePass upscalePass;
     private Material blitMaterial;
 
     public override void Create()
     {
-        blitMaterial = CoreUtils.CreateEngineMaterial(Shader.Find("Blit/CameraPixelBlit"));
-        upscalePass = new PixelBlitPass(RenderPassEvent.BeforeRenderingPostProcessing, blitMaterial);
+        var shader = Shader.Find("Blit/CameraPixelBlit");
+        if (shader != null)
+            blitMaterial = CoreUtils.CreateEngineMaterial(shader);
+
+        downscalePass = new PixelDownscalePass(RenderPassEvent.BeforeRendering);
+        upscalePass = new PixelUpscalePass(RenderPassEvent.BeforeRenderingPostProcessing, blitMaterial);
     }
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        renderer.EnqueuePass(upscalePass);
-    }
-    
-    public override void SetupRenderPasses(ScriptableRenderer renderer, in RenderingData renderingData)
-    {
-        if (pixelCamera == null)
-            pixelCamera = PixelateCamera.Instance;
-
-        if (pixelCamera == null)
-            return;
+        downscalePass.SetResolution(pixelCamera.ReferenceResolution);
+        renderer.EnqueuePass(downscalePass);
         
-        upscalePass.Setup(pixelCamera.PixelatedHandle,renderer.cameraColorTargetHandle, pixelCamera.SubPixelOffset);
+        // Pass null for upscaleHandle to let RenderGraph dynamically bind resourceData.cameraColor
+        upscalePass.UpdatePixelOffset(pixelCamera.SubPixelOffset);
+        renderer.EnqueuePass(upscalePass);
     }
 
     protected override void Dispose(bool disposing)
     {
         CoreUtils.Destroy(blitMaterial);
-
-        upscalePass?.Dispose();
         upscalePass = null;
+        downscalePass = null;
     }
 }

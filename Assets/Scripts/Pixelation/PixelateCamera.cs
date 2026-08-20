@@ -1,11 +1,5 @@
-using System;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.SceneManagement;
-using Object = UnityEngine.Object;
 
 [ExecuteAlways]
 [RequireComponent(typeof(Camera))]
@@ -13,7 +7,6 @@ using Object = UnityEngine.Object;
 public class PixelateCamera : MonoBehaviour
 {
     private Camera thisCamera;
-    private Camera upscaleCamera;
 
     private RTHandle pixelatedHandle;
     private int zoomLevel;
@@ -27,9 +20,10 @@ public class PixelateCamera : MonoBehaviour
     public float UnitsPerPixel => thisCamera.orthographicSize * 2 / referenceResolution.y;
     public Vector2 SubPixelOffset { get; private set; }
 
+    public Vector2Int ReferenceResolution => referenceResolution;
+
     public RTHandle PixelatedHandle => pixelatedHandle;
-    public Camera UpscaleCamera => upscaleCamera;
-    public Camera PixelCamera => thisCamera;
+    public Camera Camera => thisCamera;
     public static PixelateCamera Instance { get; private set; }
 
     private void Awake()
@@ -39,66 +33,14 @@ public class PixelateCamera : MonoBehaviour
 
     private void OnEnable()
     {
-        RenderPipelineManager.beginCameraRendering += OnCameraRender;
-
         Instance = this;
-        RTHandles.Initialize(referenceResolution.x, referenceResolution.y);
-        UpdateRenderTexture();
+        RenderPipelineManager.beginCameraRendering += OnCameraRender;
     }
 
     private void OnDisable()
     {
         RenderPipelineManager.beginCameraRendering -= OnCameraRender;
-
-        if (upscaleCamera)
-            upscaleCamera.enabled = false;
-
         thisCamera.ResetWorldToCameraMatrix();
-    }
-
-    private void CreateUpscaleCamera()
-    {
-        var upscaleCameraName = gameObject.name + " Upscaled";
-        GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-        var existingUpscaleCamera = rootGameObjects.FirstOrDefault(x => x.name == upscaleCameraName);
-
-        upscaleCamera = existingUpscaleCamera
-            ? existingUpscaleCamera.GetComponent<Camera>()
-            : new GameObject(upscaleCameraName).AddComponent<Camera>();
-        var additional = existingUpscaleCamera
-            ? upscaleCamera.GetComponent<UniversalAdditionalCameraData>()
-            : upscaleCamera.gameObject.AddComponent<UniversalAdditionalCameraData>();
-
-        additional.renderShadows = false;
-        additional.requiresDepthOption = CameraOverrideOption.Off;
-
-        upscaleCamera.gameObject.hideFlags = HideFlags.HideAndDontSave;
-        if (thisCamera.CompareTag("MainCamera"))
-            thisCamera.gameObject.tag = string.Empty;
-        
-        upscaleCamera.gameObject.tag = "MainCamera";
-        upscaleCamera.depth = thisCamera.depth + 1;
-        upscaleCamera.clearFlags = CameraClearFlags.Nothing;
-        upscaleCamera.cullingMask = 0;
-    }
-
-    private void UpdateRenderTexture()
-    {
-        var isHDR = ((UniversalRenderPipelineAsset)GraphicsSettings.defaultRenderPipeline).supportsHDR;
-
-        var textureDescriptor =
-            new RenderTextureDescriptor(referenceResolution.x, referenceResolution.y,
-                isHDR ? RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default);
-
-        if (PixelatedHandle == null)
-            pixelatedHandle = RTHandles.Alloc(textureDescriptor, FilterMode.Point, TextureWrapMode.Clamp,
-                name: "_PixelatedTexture");
-        else
-            RenderingUtils.ReAllocateIfNeeded(ref pixelatedHandle, textureDescriptor, FilterMode.Point,
-                TextureWrapMode.Clamp,
-                name: "_PixelatedTexture");
-
-        thisCamera.targetTexture = pixelatedHandle.rt;
     }
 
     private void OnCameraRender(ScriptableRenderContext srp, Camera cam)
@@ -106,42 +48,9 @@ public class PixelateCamera : MonoBehaviour
         if (cam != thisCamera)
             return;
 
-        if (upscaleCamera == null)
-            CreateUpscaleCamera();
-
-        upscaleCamera.enabled = true;
         thisCamera.orthographicSize = referenceResolution.y / pixelsPerUnit / 2f;
 
-        UpdateUpscaleCameraDetails();
-
-        UpdateRenderTexture();
         SnapToPixels();
-    }
-    private void UpdateUpscaleCameraDetails()
-    {
-        upscaleCamera.CopyFrom(thisCamera);
-        upscaleCamera.targetTexture = null;
-        upscaleCamera.depth = thisCamera.depth + 1;
-        upscaleCamera.clearFlags = CameraClearFlags.Nothing;
-        upscaleCamera.cullingMask = 0;
-
-        upscaleCamera.transform.SetPositionAndRotation(thisCamera.transform.position, thisCamera.transform.rotation);
-    }
-
-    private void UpdateCameraProperties()
-    {
-        var width = Screen.width;
-        var height = Screen.height;
-
-        // zoom level (PPU scale)
-        int verticalZoom = height / referenceResolution.y;
-        int horizontalZoom = width / referenceResolution.x;
-        zoomLevel = Math.Max(1, Math.Min(verticalZoom, horizontalZoom));
-
-        var pixelRect = new Rect();
-
-        pixelRect.width = zoomLevel * referenceResolution.x;
-        pixelRect.height = zoomLevel * referenceResolution.y;
     }
 
     private void SnapToPixels()
@@ -157,7 +66,7 @@ public class PixelateCamera : MonoBehaviour
 
         var pixelPerfectPos = transform.rotation * roundedPos;
 
-        var invPos = Matrix4x4.TRS(pixelPerfectPos, Quaternion.identity, Vector3.one).inverse;
+        var invPos = Matrix4x4.Translate(pixelPerfectPos).inverse;
         var invRot = Matrix4x4.Rotate(transform.rotation).inverse;
         var scaleMatrix = Matrix4x4.Scale(new Vector3(1.0f, 1.0f, -1.0f));
 

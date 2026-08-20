@@ -101,9 +101,7 @@ ScriptedImporter:
     addShadowCasters: 0
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
-  importFileNodeState: 1
   platformSettingsDirtyTick: 0
-  textureAssetName: 
   singleSpriteImportData:
   - name: 
     originalName: 
@@ -137,7 +135,7 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 12
+      width: 10
       height: 12
     spriteID: 4c67d32d2e9676a43bdeca87d8f15933
     spriteBone: []
@@ -167,9 +165,9 @@ ScriptedImporter:
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 2
+        x: 3
         y: 2
-        width: 12
+        width: 10
         height: 12
       spriteId: 4c67d32d2e9676a43bdeca87d8f15933
     linkedCells: []
@@ -180,6 +178,5 @@ ScriptedImporter:
   platformSettings: []
   generatePhysicsShape: 0
   secondarySpriteTextures: []
-  spritePackingTag: 
-  canvasSize: {x: 16, y: 16}
   previousTextureSize: {x: 32, y: 32}
+  canvasSize: {x: 16, y: 16}
