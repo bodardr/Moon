@@ -16,11 +16,13 @@ public class CraftingRecipe : IGearUnlockCondition
 
     public void Subscribe()
     {
-        CraftingBuilding.Instance.Recipes.Add(this);
+        if (CraftingBuilding.Instance != null)
+            CraftingBuilding.Instance.Recipes.Add(this);
     }
     public void Unsubscribe()
     {
-        CraftingBuilding.Instance.Recipes.Remove(this);
+        if (CraftingBuilding.Instance != null)
+            CraftingBuilding.Instance.Recipes.Remove(this);
     }
     public void UpdateUnlockCondition()
     {

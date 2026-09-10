@@ -35,10 +35,6 @@ public class SlingshotShooter : MonoBehaviour, INotifyPropertyChanged
 
     public void LoadMaterials()
     {
-        var save = SaveFile.Current;
-
-        var amountToLoad = (uint)(loadCapacityRequired * capacityLoadRatioPerClick);
-
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CapacityLoadRatio)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LaunchReady)));
     }
