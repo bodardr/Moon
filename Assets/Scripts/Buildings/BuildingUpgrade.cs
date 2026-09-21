@@ -29,7 +29,7 @@ public class BuildingUpgrade : IBuildingUpgrade
     }
 
     public bool ShouldShow => (Prerequisites == null || Prerequisites.Count == 0 ||
-            Prerequisites.All(y => SaveFile.Current.buildingUpgrades.Contains(y.Name)))
+            Prerequisites.All(y => MoonSaveFile.Current.buildingUpgrades.Contains(y.Name)))
         && (!IsUnlocked || ShowAfterUnlock);
 
     public BuildingUpgrade(string name, Action<bool> onUpgrade, bool showAfterUnlock = false, params ResourceWithAmount[] costs)
@@ -60,6 +60,6 @@ public class BuildingUpgrade : IBuildingUpgrade
         if (fromLoad)
             return;
 
-        SaveFile.Current.buildingUpgrades.Add(Name);
+        MoonSaveFile.Current.buildingUpgrades.Add(Name);
     }
 }

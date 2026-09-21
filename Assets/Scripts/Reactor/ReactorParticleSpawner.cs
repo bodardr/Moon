@@ -20,10 +20,10 @@ public class ReactorParticleSpawner : MonoBehaviour
     [Header("Walls")]
     [SerializeField] private float wallThickness;
     [SerializeField] private Transform[] walls;
+    [SerializeField] private BoxCollider2D wallCollider;
 
     private Vector2[] particlePositions;
     private List<GameObject> spawnedParticles = new();
-
 
     public void CreateWalls()
     {
@@ -46,6 +46,9 @@ public class ReactorParticleSpawner : MonoBehaviour
             wall.localScale = size;
             wall.localPosition = pos + (Vector2)dimensions * 0.5f;
         }
+        
+        wallCollider.offset = (Vector2)dimensions * 0.5f;
+        wallCollider.size = wallDimensions;
     }
 
     public async Awaitable SpawnParticles()
@@ -65,13 +68,7 @@ public class ReactorParticleSpawner : MonoBehaviour
             }
 
             particlePositions[i] = GenerateNewCell(particlePositions, i, candidateSampleCount);
-        }
-        
-        //Spawn particles
-        foreach (var particlePosition in particlePositions)
-        {
-            var particle = Instantiate(particlePrefab, particlePosition, Quaternion.identity, particleParent);
-            spawnedParticles.Add(particle);
+            spawnedParticles.Add(Instantiate(particlePrefab, particlePositions[i], Quaternion.identity, particleParent));
         }
     }
 
@@ -106,7 +103,7 @@ public class ReactorParticleSpawner : MonoBehaviour
     {
         if (particlePositions == null)
             return;
-        
+
         Gizmos.color = Color.cyan;
         foreach (var cell in particlePositions)
             Gizmos.DrawWireSphere(cell, 0.2f);

@@ -45,7 +45,7 @@ public class BuildingUpgradesTab : MonoBehaviour, ICollectionCallback, INotifyPr
             return;
 
         //Subtract costs
-        var saveFile = SaveFile.Current;
+        var saveFile = MoonSaveFile.Current;
         foreach (var cost in upgrade.Costs)
             saveFile[cost.ResourceType].Amount -= cost.Amount;
 

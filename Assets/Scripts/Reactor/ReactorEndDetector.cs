@@ -10,7 +10,7 @@ public class ReactorEndDetector : MonoBehaviour
 
     public Rigidbody2D ParticleRB { get; set; }
 
-    public bool IsInactive => inactiveImageFill.value >= 1f;
+    public bool IsRunEnded => inactiveImageFill.value >= 1f;
 
     private void Update()
     {

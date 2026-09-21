@@ -2,6 +2,6 @@
 {
     public interface IFirstLoadCallback
     {
-        public void OnFirstLoad(SaveFile saveFile);
+        public void OnFirstLoad(MoonSaveFile saveFile);
     }
 }

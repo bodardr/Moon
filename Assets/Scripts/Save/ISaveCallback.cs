@@ -2,6 +2,6 @@
 {
     interface ISaveCallback
     {
-        public void OnSave(SaveFile saveFile);
+        public void OnSave(MoonSaveFile saveFile);
     }
 }

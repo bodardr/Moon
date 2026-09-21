@@ -1,19 +1,41 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class ParticleLauncher : MonoBehaviour
 {
     private bool isHolding = false;
     private bool hasLaunched = false;
     private Rigidbody2D particleRB;
+    private Vector3 delta;
 
     [SerializeField] private float maxRadius;
     [SerializeField] private float radiusToForce;
 
+    [SerializeField] private LineRenderer aimLine;
+    [SerializeField] private LineRenderer trajectoryLine;
+
     [SerializeField] private GameObject launchedParticlePrefab;
-    
+
     public bool HasLaunched => hasLaunched;
     public Rigidbody2D ParticleRB => particleRB;
+
+    private void OnEnable()
+    {
+        trajectoryLine.SetPosition(0, transform.position);
+        trajectoryLine.SetPosition(1, transform.position);
+
+        aimLine.SetPosition(0, transform.position);
+        aimLine.SetPosition(1, transform.position);
+        
+        //Instantiate particle
+        particleRB = Instantiate(launchedParticlePrefab, transform.position, Quaternion.identity)
+            .GetComponent<Rigidbody2D>();
+        particleRB.transform.localScale = Vector3.one * Upgrades.ActiveUpgrades.ParticleSize.EvaluatedValue;
+        particleRB.bodyType = RigidbodyType2D.Kinematic;
+        particleRB.mass = Upgrades.ActiveUpgrades.ParticleMass.EvaluatedValue;
+    }
 
     private void Update()
     {
@@ -28,25 +50,30 @@ public class ParticleLauncher : MonoBehaviour
         if (!isHolding)
             return;
 
+        delta = GetClampedMouseToWorldDelta();
+
+        trajectoryLine.SetPosition(0,transform.position - delta.normalized * 0.1f);
+        trajectoryLine.SetPosition(1, transform.position - delta);
+        aimLine.SetPosition(1, transform.position + delta);
+    }
+    private Vector3 GetClampedMouseToWorldDelta()
+    {
         var closestWorldPoint = Camera.main.ScreenToWorldPoint(Mouse.current.position.value);
         closestWorldPoint.z = 0;
-        var delta = Vector3.ClampMagnitude(closestWorldPoint - transform.position, maxRadius);
-        particleRB.position = transform.position + delta;
+        return Vector3.ClampMagnitude(closestWorldPoint - transform.position, maxRadius);
     }
+
     private void StartHolding()
     {
-        particleRB = Instantiate(launchedParticlePrefab, transform.position, Quaternion.identity)
-            .GetComponent<Rigidbody2D>();
-        particleRB.bodyType = RigidbodyType2D.Kinematic;
         isHolding = true;
     }
     private void ReleaseParticle()
     {
         isHolding = false;
-        var delta = transform.position - (Vector3)particleRB.position;
         particleRB.bodyType = RigidbodyType2D.Dynamic;
-        particleRB.linearVelocity = delta * radiusToForce;
-        
+        particleRB.linearVelocity = -delta * Upgrades.ActiveUpgrades.LauncherSpeed.EvaluatedValue;
+
         hasLaunched = true;
+        gameObject.SetActive(false);
     }
 }

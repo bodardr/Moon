@@ -97,7 +97,7 @@ public class GearsEditor : MonoSingleton<GearsEditor>, IGearDroppable
             //The remaining gears that will be removed
             //from the column will be added back to the inventory
             foreach (var gear in column)
-                SaveFile.Current.AddGearToInventory(gear);
+                MoonSaveFile.Current.AddGearToInventory(gear);
 
             if (column.Count == 0)
             {
@@ -157,7 +157,7 @@ public class GearsEditor : MonoSingleton<GearsEditor>, IGearDroppable
 
         }
 
-        SaveFile.Current.RemoveGear(gear);
+        MoonSaveFile.Current.RemoveGear(gear);
 
         Refresh();
         return true;

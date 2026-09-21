@@ -51,7 +51,7 @@ public class LuxGeneratorBuilding : BuildingBase, IFirstLoadCallback
         };
     }
 
-    public void OnFirstLoad(SaveFile saveFile)
+    public void OnFirstLoad(MoonSaveFile saveFile)
     {
         gearHolder.Gears = new List<List<List<Gear>>>
         {
@@ -115,9 +115,9 @@ public class LuxGeneratorBuilding : BuildingBase, IFirstLoadCallback
     private void UnlockObservatoryAndGears(bool fromLoad)
     {
         observatory.gameObject.SetActive(true);
-        SaveFile.Current.GearsUnlocked = true;
+        MoonSaveFile.Current.GearsUnlocked = true;
 
         if (!fromLoad)
-            SaveFile.Current.AddGearToInventory(ampGear);
+            MoonSaveFile.Current.AddGearToInventory(ampGear);
     }
 }

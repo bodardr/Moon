@@ -7,7 +7,7 @@ public class GearSaveHandler : MonoSingleton<GearSaveHandler>, ILoadCallback, IS
 {
     private Dictionary<string, GearHolder> gearHolders;
 
-    public void OnLoad(SaveFile saveFile)
+    public void OnLoad(MoonSaveFile saveFile)
     {
         gearHolders =
             ((GearHolder[])FindObjectsByType(typeof(GearHolder), FindObjectsInactive.Include)).ToDictionary(x => x.name, x => x);
@@ -21,7 +21,7 @@ public class GearSaveHandler : MonoSingleton<GearSaveHandler>, ILoadCallback, IS
         }
     }
 
-    public void OnSave(SaveFile saveFile)
+    public void OnSave(MoonSaveFile saveFile)
     {
         var savedSequences = saveFile.savedGearSequences;
         savedSequences.Clear();

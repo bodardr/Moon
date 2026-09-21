@@ -9,6 +9,6 @@ public class GenerateLuxBehavior : IGearBehavior
         Dictionary<string, object> additionalParameters)
     {
         foreach (var target in targets)
-            SaveFile.Current.Lux.Amount += amplitude;
+            MoonSaveFile.Current.Lux.Amount += amplitude;
     }
 }

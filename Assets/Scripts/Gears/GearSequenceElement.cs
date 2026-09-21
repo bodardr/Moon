@@ -70,6 +70,6 @@ public class GearSequenceElement : MonoBehaviour, IGearDraggable, INotifyPropert
 
     public void OnDragCancelled()
     {
-        SaveFile.Current.AddGearToInventory(gear);
+        MoonSaveFile.Current.AddGearToInventory(gear);
     }
 }

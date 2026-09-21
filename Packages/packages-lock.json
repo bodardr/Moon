@@ -5,10 +5,10 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "6cfad0691df737c58effb6b170df32de1b94be3f"
+      "hash": "bb68673acc21c8b1ae4db0fe7e9e97df01ccb4dd"
     },
     "com.bodardr.urpshaders": {
-      "version": "file:com.bodardr.urp-shaders",
+      "version": "file:com.bodardr.urpshaders",
       "depth": 0,
       "source": "embedded",
       "dependencies": {

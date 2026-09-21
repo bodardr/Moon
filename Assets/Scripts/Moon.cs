@@ -23,7 +23,7 @@ public class Moon : MonoBehaviour
     [SerializeField] private float updateInterval;
     [SerializeField] private Vector3 rotationPerSecond;
     
-    private uint CurrentTierDamage => moonTiers[SaveFile.Current.moonDamageTier];
+    private uint CurrentTierDamage => moonTiers[MoonSaveFile.Current.moonDamageTier];
     
     public float NormalizedPos
     {
@@ -31,7 +31,7 @@ public class Moon : MonoBehaviour
         set
         {
             normalizedPos = value;
-            SaveFile.Current.normalizedMoonTime = value;
+            MoonSaveFile.Current.normalizedMoonTime = value;
         }
     }
 
@@ -42,7 +42,7 @@ public class Moon : MonoBehaviour
 
     private void OnEnable()
     {
-        normalizedPos = SaveFile.Current.normalizedMoonTime;
+        normalizedPos = MoonSaveFile.Current.normalizedMoonTime;
         StartCoroutine(UpdateTimeCoroutine());
     }
 
@@ -53,9 +53,9 @@ public class Moon : MonoBehaviour
 
     public void DealDamage(uint amount)
     {
-        SaveFile.Current.moonDamage += amount;
+        MoonSaveFile.Current.moonDamage += amount;
         
-        if (SaveFile.Current.moonDamage >= CurrentTierDamage && moonTiers.Length > SaveFile.Current.moonDamageTier + 1)
+        if (MoonSaveFile.Current.moonDamage >= CurrentTierDamage && moonTiers.Length > MoonSaveFile.Current.moonDamageTier + 1)
             IncreaseMoonTier();
 
         this.DOKill();
@@ -64,8 +64,8 @@ public class Moon : MonoBehaviour
 
     private static void IncreaseMoonTier()
     {
-        SaveFile.Current.moonDamageTier++;
-        SaveFile.Current.moonDamage = 0;
+        MoonSaveFile.Current.moonDamageTier++;
+        MoonSaveFile.Current.moonDamage = 0;
 
         // Unlock stuff depending on the tier.
     }

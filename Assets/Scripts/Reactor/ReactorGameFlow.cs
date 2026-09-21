@@ -1,6 +1,20 @@
+using System;
+using Bodardr.Databinding.Runtime;
+using Save;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+
+[Serializable]
+public class Currencies
+{
+    public static Currencies Active => SaveFile.Current.Currencies;
+    
+    [FormerlySerializedAsBinding("Money")]
+    public int Credits;
+    public int Research;
+}
 
 public class ReactorGameFlow : MonoBehaviour
 {
@@ -8,11 +22,13 @@ public class ReactorGameFlow : MonoBehaviour
     [SerializeField] private ReactorParticleSpawner spawner;
     [SerializeField] private ParticleLauncher launcher;
     [SerializeField] private ReactorEndDetector endDetector;
-    
 
     [SerializeField] private CinemachineVirtualCameraBase reactorCam;
     [SerializeField] private CinemachineVirtualCameraBase launcherCam;
     [SerializeField] private CinemachineVirtualCameraBase particleCam;
+
+    [SerializeField] private Transform lookaheadTransform;
+    [SerializeField] private CinemachineTargetGroup targetGroup;
 
     private void Start()
     {
@@ -22,8 +38,8 @@ public class ReactorGameFlow : MonoBehaviour
     {
         reactorCam.enabled = true;
 
-        await spawner.SpawnParticles();
         spawner.CreateWalls();
+        await spawner.SpawnParticles();
 
         //Wait for click
         while (!Mouse.current.leftButton.wasReleasedThisFrame)
@@ -41,12 +57,24 @@ public class ReactorGameFlow : MonoBehaviour
         while (!launcher.HasLaunched)
             await Awaitable.NextFrameAsync();
 
+        targetGroup.Targets[0].Object = launcher.ParticleRB.transform;
+        var launchedParticle = launcher.ParticleRB.GetComponent<LaunchedParticle>();
+        targetGroup.Targets[1].Object = launchedParticle.LookaheadTransform;
+
         particleCam.enabled = true;
-        particleCam.Follow = particleCam.LookAt = launcher.ParticleRB.transform;
-        
         endDetector.ParticleRB = launcher.ParticleRB;
 
-        while (!endDetector.IsInactive)
+        while (!endDetector.IsRunEnded)
             await Awaitable.NextFrameAsync();
+
+        OnRunFinished();
+    }
+    private static void OnRunFinished()
+    {
+        Currencies.Active.Credits += ReactorParticle.collisionScore;
+        Currencies.Active.Research += ReactorParticle.collisionScore;
+        ReactorParticle.collisionScore = 0;
+
+        SceneManager.LoadScene("Upgrades Scene");
     }
 }

@@ -24,7 +24,7 @@ public class UnlockedGearList : MonoBehaviour
                 gearPool.Release(activeGear);
         activeGears.Clear();
 
-        foreach (var (gearID, amount) in SaveFile.Current.availableGearInventory)
+        foreach (var (gearID, amount) in MoonSaveFile.Current.availableGearInventory)
         {
             var gearElement = gearPool.Get();
             gearElement.transform.SetParent(transform);

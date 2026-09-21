@@ -21,7 +21,7 @@ public abstract class BuildingBase : MonoBehaviour
     {
         InitializeUpgrades();
         
-        var saveFile = SaveFile.Current;
+        var saveFile = MoonSaveFile.Current;
         foreach (var upgrade in upgrades)
             if (saveFile.buildingUpgrades.Contains(upgrade.Name))
                 upgrade.Unlock(true);

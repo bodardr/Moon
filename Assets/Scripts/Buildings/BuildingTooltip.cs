@@ -112,7 +112,7 @@ public class BuildingTooltip : MonoSingleton<BuildingTooltip>, INotifyPropertyCh
             var active = tabs.HasFlag(tab);
 
             if (tab == BuildingTabs.Gears)
-                active = active && SaveFile.Current.GearsUnlocked;
+                active = active && MoonSaveFile.Current.GearsUnlocked;
             
             var index = (int)Mathf.Log((int)tab,2);
             tabButtons[index].gameObject.SetActive(active);

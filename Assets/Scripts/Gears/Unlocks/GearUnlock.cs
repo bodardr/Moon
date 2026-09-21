@@ -17,8 +17,8 @@ public class GearUnlock : ScriptableObjectWithID
     
     private void OnConditionUnlocked()
     {
-        SaveFile.Current.availableGearInventory[gearUnlocked.UID] += 1;
-        SaveFile.Current.gearUnlocks.Add(UID);
+        MoonSaveFile.Current.availableGearInventory[gearUnlocked.UID] += 1;
+        MoonSaveFile.Current.gearUnlocks.Add(UID);
     }
     
     public static List<GearUnlock> AllUnlocks = new();

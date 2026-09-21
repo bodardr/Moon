@@ -8,13 +8,13 @@ public class Haste : IStatusEffect
 
     public void OnEffectApplied(GearTarget target, int effectLevel)
     {
-        target.Stats.SpeedRate.Add(Stat.StatOverrideType.AdditiveMultiplier, HASTE_MODIFIER,
+        target.Stats.SpeedRate.Set(Stat.OverrideType.AdditiveMultiplier, HASTE_MODIFIER,
             effectLevel * HASTE_MULTIPLIER_PER_LEVEL);
     }
 
     public void OnEffectLevelChanged(GearTarget target, int newLevel)
     {
-        target.Stats.SpeedRate.Modify(Stat.StatOverrideType.AdditiveMultiplier, HASTE_MODIFIER,
+        target.Stats.SpeedRate.Set(Stat.OverrideType.AdditiveMultiplier, HASTE_MODIFIER,
             newLevel * HASTE_MULTIPLIER_PER_LEVEL);
     }
 
@@ -25,6 +25,6 @@ public class Haste : IStatusEffect
 
     public void OnEffectRemoved(GearTarget target)
     {
-        target.Stats.SpeedRate.Remove(Stat.StatOverrideType.AdditiveMultiplier, HASTE_MODIFIER);
+        target.Stats.SpeedRate.Remove(Stat.OverrideType.AdditiveMultiplier, HASTE_MODIFIER);
     }
 }

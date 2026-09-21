@@ -2,6 +2,6 @@
 {
     public interface ILoadCallback
     {
-        public void OnLoad(SaveFile saveFile);
+        public void OnLoad(MoonSaveFile saveFile);
     }
 }
